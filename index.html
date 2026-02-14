@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Valentine's Day 💕 Phakhawat</title>
+  
+  <!-- Google Fonts: Kanit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- SweetAlert2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Kanit', sans-serif;
+      background: linear-gradient(135deg, #ffebee, #ffc1e3);
+      min-height: 100vh;
+      color: #880e4f;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: opacity 0.6s ease;
+    }
+
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    h1, h2 {
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .main-img {
+      max-width: 85vw;
+      max-height: 55vh;
+      border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(233,30,99,0.3);
+      object-fit: cover;
+      margin: 1.5rem 0;
+      border: 8px solid white;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      font-family: 'Kanit', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 500;
+      padding: 14px 36px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    #yesBtn {
+      background: #e91e63;
+      color: white;
+    }
+
+    #yesBtn:hover {
+      background: #c2185b;
+      transform: scale(1.08);
+    }
+
+    #noBtn {
+      background: #f8bbd0;
+      color: #880e4f;
+    }
+
+    #noBtn:hover {
+      background: #f48fb1;
+      transform: scale(1.08);
+    }
+
+    .thanks-page {
+      background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+    }
+
+    .thanks-page h1 {
+      font-size: 2.8rem;
+      color: #ad1457;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 3.2rem;          /* หัวใจใหญ่ขึ้นตามที่ขอ */
+      color: #e91e63;
+      pointer-events: none;
+      animation: float 10s infinite linear;
+      opacity: 0.85;
+      text-shadow: 0 0 10px rgba(233,30,99,0.6);
+      z-index: 5;
+    }
+
+    @keyframes float {
+      0%   { 
+        transform: translateY(110vh) scale(0.6) rotate(0deg); 
+        opacity: 0;
+      }
+      10%  { opacity: 0.9; }
+      90%  { opacity: 0.9; }
+      100% { 
+        transform: translateY(-30vh) scale(1.1) rotate(720deg); 
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 500px) {
+      h1, h2 { font-size: 1.9rem; }
+      button { font-size: 1.2rem; padding: 12px 28px; }
+      .btn-group { gap: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- หน้าแรก -->
+  <div id="page1" class="container">
+    <h1>Happy Valentine's Day 💖</h1>
+     <h2>อยากรู้ป่ะว่าข้างในมีอะไร...</h2>
+    
+    <img 
+      class="main-img" 
+      src="https://i.postimg.cc/mgSQhDWq/2.jpg" 
+      alt="Valentine romantic couple"
+    />
+
+    <div class="btn-group">
+      <button id="yesBtn">อยากรู้ 💕</button>
+      <button id="noBtn">ไม่อยากรู้</button>
+    </div>
+  </div>
+
+  <!-- หน้าที่สอง (ขอบคุณ) -->
+  <div id="page2" class="container hidden thanks-page">
+    <h1>ขอบคุณนะที่ยังอยู่ด้วยกันเสมอมา ♡</h1>
+    
+    
+    <img 
+      class="main-img" 
+      src="https://i.postimg.cc/gjQ2Wx0T/S-17735722.jpg" 
+      alt="Thank you valentine hearts"
+       <h2>นาซีต้าาาาาาาา 💞</h2>
+  
+
+  </div>
+
+  <script>
+    const page1 = document.getElementById('page1');
+    const page2 = document.getElementById('page2');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+
+    let canClickYes = false;
+    let timeoutId = null;
+    let mouseMoveCount = 0;
+
+    // สร้างหัวใจลอย ๆ (ใหญ่ + หลายสี + บ่อยขึ้น)
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      const emojis = ['💗','💖','💕','💞','💝','❤️','🩷','🫀','♡','💘'];
+      heart.innerHTML = emojis[Math.floor(Math.random()*emojis.length)];
+      
+      // สีสุ่มธีมวาเลนไทน์
+      const colors = ['#e91e63', '#f06292', '#ec407a', '#d81b60', '#c2185b', '#ad1457', '#ff80ab'];
+      heart.style.color = colors[Math.floor(Math.random()*colors.length)];
+      
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (Math.random() * 6 + 8) + 's'; // 8-14 วินาที
+      document.body.appendChild(heart);
+      
+      setTimeout(() => heart.remove(), 15000);
+    }
+
+    // หัวใจออกบ่อยขึ้น (ทุก 450ms)
+    setInterval(createHeart, 450);
+
+    // ฟังก์ชันทำให้ปุ่ม Yes หนีเมาส์
+    function makeYesRun(e) {
+      if (!canClickYes) {
+        const rect = yesBtn.getBoundingClientRect();
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        if (Math.abs(mouseX - (rect.left + rect.width/2)) < 80 &&
+            Math.abs(mouseY - (rect.top + rect.height/2)) < 60) {
+          
+          mouseMoveCount++;
+          
+          const escapePower = Math.min(180 + mouseMoveCount * 8, 320);
+          
+          let newX = Math.random() * (window.innerWidth - rect.width - 40) + 20;
+          let newY = Math.random() * (window.innerHeight - rect.height - 100) + 50;
+
+          if (mouseX < window.innerWidth / 2) {
+            newX = Math.max(newX, mouseX + 180);
+          } else {
+            newX = Math.min(newX, mouseX - 180 - rect.width);
+          }
+
+          yesBtn.style.position = 'fixed';
+          yesBtn.style.left = newX + 'px';
+          yesBtn.style.top = newY + 'px';
+          yesBtn.style.transition = 'all 0.4s ease-out';
+        }
+      }
+    }
+
+    // เล็ง No นาน 10 วินาที → ถามยอมยัง
+    noBtn.addEventListener('mouseenter', () => {
+      if (!canClickYes) {
+        timeoutId = setTimeout(() => {
+          Swal.fire({
+            title: "ทำแต่งานก็งี้แหละ",
+            text: "ให้ลองตัดสินใจใหม่อะ",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#e91e63",
+            cancelButtonColor: "#757575",
+            confirmButtonText: "โอเค ยอมแล้ว 💕",
+            cancelButtonText: "ยังไม่ยอมอีก"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              canClickYes = true;
+              yesBtn.style.position = 'static';
+              yesBtn.style.left = 'auto';
+              yesBtn.style.top = 'auto';
+              yesBtn.textContent = "กดเลยยย 💖";
+              Swal.fire("อิอิอิอิ ♡", "", "success");
+            }
+          });
+        }, 3000);
+      }
+    });
+
+    noBtn.addEventListener('mouseleave', () => {
+      clearTimeout(timeoutId);
+    });
+
+    // คลิก Yes
+    yesBtn.addEventListener('click', () => {
+      if (canClickYes) {
+        page1.classList.add('hidden');
+        page2.classList.remove('hidden');
+        Swal.fire({
+          title: "อิอิอิอิ 💞",
+          text: "ดีมากไอน้องง ♡",
+          icon: "success",
+          timer: 2800
+        });
+      } else {
+        // หนีตอนกด (ถ้ายังไม่ยอม)
+        const rect = yesBtn.getBoundingClientRect();
+        let escapeX = Math.random() > 0.5 ? -220 : 220;
+        yesBtn.style.left = (rect.left + escapeX) + 'px';
+      }
+    });
+
+    // เริ่มหนีเมาส์
+    document.addEventListener('mousemove', makeYesRun);
+
+    // คลิก No → หนียิ่งแรง + แจ้งเตือน
+    noBtn.addEventListener('click', () => {
+      if (!canClickYes) {
+        mouseMoveCount += 15;
+        Swal.fire("ทำงานเครียดก็งี้ 😢", "ลองใหม่ดิ๊~", "warning");
+      }
+    });
+  </script>
+
+</body>
+</html>
